@@ -238,7 +238,16 @@ using namespace std;
 // =============================================================================
 
 bool push(Stack& s, int nilai) {
-    return false;
+    Node* newNode = new Node;
+
+    if(newNode == nullptr){
+        return false;
+    }
+
+    newNode->data = nilai;
+    newNode->next = s.top;
+    s.top = newNode;
+    return true;
 }
 
 // =============================================================================
@@ -300,7 +309,16 @@ bool push(Stack& s, int nilai) {
 // =============================================================================
 
 bool pop(Stack& s, int& nilai) {
-    return false;
+    if(s.top == nullptr){
+        return false;
+    }
+
+    Node* del = s.top;
+    nilai = del->data;
+    s.top = s.top->next;
+    delete(del);
+
+    return true;
 }
 
 // =============================================================================
@@ -347,6 +365,11 @@ bool pop(Stack& s, int& nilai) {
 // =============================================================================
 
 void clear(Stack& s) {
+    while(s.top != nullptr){
+        Node* del = s.top;
+        s.top = s.top->next;
+        delete(del);
+    }
 }
 
 // =============================================================================
@@ -409,8 +432,32 @@ void clear(Stack& s) {
 //     ini selesai.
 // =============================================================================
 
+
 bool kurungSeimbang(const string& ekspresi) {
-    return false;
+    Stack s;
+    inisialisasi(s);
+
+    for(char c : ekspresi){
+        if(c == '(' || c == '[' || c == '{'){
+            if(!push(s, static_cast<int>(c))){
+                clear(s);
+                return false;
+            }
+        }else if(c == ')' || c == ']' || c == '}'){
+            int topChar;
+            if(!pop(s, topChar)){
+                clear(s);
+                return false;
+            }else if((c== ')' && c != '(') || (c == ']' && c != '[') || (c == '}' && c != '{')){
+                clear(s);
+                return false;
+            }
+        }
+    }
+
+    bool hasil = isEmpty(s);
+    clear(s);
+    return hasil;
 }
 
 // =============================================================================
